@@ -1,0 +1,29 @@
+version: '3.3'
+
+services:
+  backend:
+    depends_on:
+      - db
+    env_file:
+      - .env
+    build:
+      context: .
+      args:
+        INSTALL_DEV: ${INSTALL_DEV}
+    ports:
+      - 8080:80
+
+  db:
+    image: postgres:13.4-buster
+    ports:
+      - 5432:5432
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_DB=${DATABASE_NAME}
+      - POSTGRES_USER=${DATABASE_USER}
+      - POSTGRES_PASSWORD=${DATABASE_PASS}
+      - TZ=America/Asuncion
+    # volumes:
+    #   - ./volumes/db:/var/lib/postgresql/data
+    # restart: always

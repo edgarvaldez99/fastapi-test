@@ -1,5 +1,6 @@
 import nox
 
+
 @nox.session(python=["3.7", "3.8"])
 def tests(session):
     session.install("poetry")
@@ -7,13 +8,15 @@ def tests(session):
     session.run("coverage", "run", "-m", "pytest")
     session.run("coverage", "report")
 
+
 @nox.session
 def lint(session):
     session.install("poetry")
     session.run("poetry", "install")
     session.run("black", "--check", "app/")
-    session.run("isort", "--recursive", "--check-only", "app")
+    session.run("isort", "--check-only", "app")
     session.run("flake8", "app")
+
 
 @nox.session
 def typing(session):

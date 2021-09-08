@@ -6,10 +6,11 @@
 # https://github.com/tiangolo/uvicorn-gunicorn-fastapi-docker#pre_start_path
 
 # Let the DB start
-python /app/database/check_is_ready.py
+python /app/app/database/check_is_ready.py
 
 # Run migrations
+# alembic revision --autogenerate
 alembic upgrade head
 
 # Create initial data in DB
-python /app/database/initial_data.py
+python /app/app/database/initial_data.py

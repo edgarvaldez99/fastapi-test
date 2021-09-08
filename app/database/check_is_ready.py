@@ -1,6 +1,5 @@
 import logging
 
-from fastapi import Depends
 from sqlalchemy.orm import Session  # type: ignore
 from tenacity import after_log, before_log, retry, stop_after_attempt, wait_fixed
 
@@ -19,8 +18,7 @@ wait_seconds = 1
 )
 def init() -> None:
     try:
-        db_conn = Depends(get_database_connection)
-        db = Session(bind=db_conn)
+        db = Session(bind=get_database_connection())
         # Try to create session to check if DB is awake
         db.execute("SELECT 1")
     except Exception as e:

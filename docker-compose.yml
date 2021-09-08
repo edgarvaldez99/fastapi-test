@@ -12,6 +12,8 @@ services:
         INSTALL_DEV: ${INSTALL_DEV}
     ports:
       - 8080:80
+    volumes:
+      - ./alembic:/app/alembic
 
   db:
     image: postgres:13.4-buster

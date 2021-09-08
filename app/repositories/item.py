@@ -15,8 +15,8 @@ def get_items(db: Session, skip: int = 0, limit: int = 100) -> List[Item]:
     return db.query(Item).offset(skip).limit(limit).all()
 
 
-def create_item(db: Session, *, item: ItemBase):
-    db_item = Item(**item.dict())  # type: ignore
+def create_item(db: Session, *, item: ItemBase, current_user: User):
+    db_item = Item(**item.dict(), modified_by=current_user.email)  # type: ignore
     db.add(db_item)
     db.commit()
     db.refresh(db_item)

@@ -3,8 +3,8 @@ from typing import List
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session  # type: ignore
 
-from app import repositories, schemas, services
-from app.dependencies import get_db_session
+from app import models, repositories, schemas, services
+from app.dependencies import get_current_user, get_db_session
 
 api = APIRouter()
 
@@ -25,5 +25,6 @@ async def read_item(name: str, db: Session = Depends(get_db_session)):  # noqa: 
 async def add_new_item(
     item: schemas.item.ItemBase,
     db: Session = Depends(get_db_session),  # noqa: B008
+    current_user: models.User = Depends(get_current_user),  # noqa: B008
 ):
-    return repositories.item.create_item(db=db, item=item)
+    return repositories.item.create_item(db=db, item=item, current_user=current_user)

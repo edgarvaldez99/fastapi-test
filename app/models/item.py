@@ -1,9 +1,10 @@
 from sqlalchemy import BigInteger, Column, Integer, String  # type: ignore
 
+from app.audits.audit_mixin import AuditMixin
 from app.database import Base
 
 
-class Item(Base):
+class Item(AuditMixin, Base):
     """
     Defines the items model
     """

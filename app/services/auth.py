@@ -1,12 +1,13 @@
 from datetime import timedelta
 from typing import Optional
 
-from fastapi import HTTPException  # type: ignore
+from fastapi import HTTPException, Request  # type: ignore
 from fastapi.security import OAuth2PasswordRequestForm
 from jose import jwt  # type: ignore
 from pydantic import ValidationError
 from sqlalchemy.orm import Session  # type: ignore
 
+from app.audits import AuditAuth
 from app.config import ACCESS_TOKEN_EXPIRE_MINUTES
 from app.models.user import User
 from app.repositories.user import get, get_by_email
@@ -33,13 +34,25 @@ def get_user_from_token(db: Session, *, token: str) -> Optional[User]:
         return None
 
 
-def login(db: Session, *, form_data: OAuth2PasswordRequestForm):
+def register_audit_auth(db: Session, *, user: User, action: str, ip: str):
+    db_audit = AuditAuth(
+        action=action,
+        user_id=user.id,
+        user=user.email,
+        ip=ip,
+    )
+    db.add(db_audit)
+    db.commit()
+
+
+def login(db: Session, *, request: Request, form_data: OAuth2PasswordRequestForm):
     user = authenticate(db, email=form_data.username, password=form_data.password)
     if not user:
         raise HTTPException(status_code=400, detail="Incorrect email or password")
     elif not user.is_active:
         raise HTTPException(status_code=400, detail="Inactive user")
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    register_audit_auth(db, user=user, action="login", ip=request.client.host)
     return {
         "access_token": create_access_token(
             user.id, expires_delta=access_token_expires

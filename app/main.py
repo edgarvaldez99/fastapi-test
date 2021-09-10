@@ -6,7 +6,7 @@ from app.middlewares import AuditDatabaseMiddleware, AuditRequestMiddleware
 app.add_middleware(
     AuditDatabaseMiddleware,
     database_connection_function=get_database_connection,
-    excluded_routes = []
+    excluded_routes=[],
 )
 
 app.add_middleware(

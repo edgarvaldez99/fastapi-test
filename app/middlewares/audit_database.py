@@ -4,7 +4,7 @@ from typing import List
 from fastapi import FastAPI, Request
 from jose import jwt  # type: ignore
 from pydantic import ValidationError
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session  # type: ignore
 from starlette.datastructures import FormData  # type: ignore
 from starlette.middleware.base import BaseHTTPMiddleware
 

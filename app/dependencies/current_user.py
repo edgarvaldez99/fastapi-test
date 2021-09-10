@@ -5,8 +5,8 @@ from pydantic import ValidationError
 from sqlalchemy.orm import Session  # type: ignore
 
 from app import models, repositories, schemas
-from app.config import JWT_ALGORITHM, SECRET_KEY
 from app.dependencies.database_session import get_db_session
+from app.utils import get_payload_from_token
 
 reusable_oauth2 = OAuth2PasswordBearer(tokenUrl="login")
 
@@ -16,7 +16,7 @@ async def get_current_user(
     token: str = Depends(reusable_oauth2),  # noqa: B008
 ) -> models.User:
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[JWT_ALGORITHM])
+        payload = get_payload_from_token(token)
         token_data = schemas.TokenPayload(**payload)
     except (jwt.JWTError, ValidationError):
         raise HTTPException(

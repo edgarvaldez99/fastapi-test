@@ -3,13 +3,16 @@ from typing import Optional
 
 from fastapi import HTTPException  # type: ignore
 from fastapi.security import OAuth2PasswordRequestForm
+from jose import jwt  # type: ignore
+from pydantic import ValidationError
 from sqlalchemy.orm import Session  # type: ignore
 
 from app.config import ACCESS_TOKEN_EXPIRE_MINUTES
 from app.models.user import User
-from app.repositories.user import get_by_email
+from app.repositories.user import get, get_by_email
+from app.schemas import TokenPayload
 from app.services.security import create_access_token
-from app.utils.security import verify_password
+from app.utils.security import get_payload_from_token, verify_password
 
 
 def authenticate(db: Session, *, email: str, password: str) -> Optional[User]:
@@ -19,6 +22,15 @@ def authenticate(db: Session, *, email: str, password: str) -> Optional[User]:
     if not verify_password(password, user.hashed_password):
         return None
     return user
+
+
+def get_user_from_token(db: Session, *, token: str) -> Optional[User]:
+    try:
+        payload = get_payload_from_token(token)
+        token_data = TokenPayload(**payload)
+        return get(db, id=token_data.sub)
+    except (jwt.JWTError, ValidationError):
+        return None
 
 
 def login(db: Session, *, form_data: OAuth2PasswordRequestForm):

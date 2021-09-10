@@ -1,1 +1,2 @@
-from .audit_request_middleware import AuditRequestMiddleware  # noqa
+from .audit_database import AuditDatabaseMiddleware  # noqa
+from .audit_request import AuditRequestMiddleware  # noqa

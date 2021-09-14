@@ -1,4 +1,5 @@
 from datetime import timedelta
+from types import FunctionType
 from typing import Optional
 
 from fastapi import HTTPException, Request  # type: ignore
@@ -9,6 +10,7 @@ from sqlalchemy.orm import Session  # type: ignore
 
 from app.audits import AuditAuth
 from app.config import ACCESS_TOKEN_EXPIRE_MINUTES
+from app.constants import AUTHORIZATION
 from app.models.user import User
 from app.repositories.user import get, get_by_email
 from app.schemas import TokenPayload
@@ -32,6 +34,15 @@ def get_user_from_token(db: Session, *, token: str) -> Optional[User]:
         return get(db, id=token_data.sub)
     except (jwt.JWTError, ValidationError):
         return None
+
+
+def get_user_from_request(request: Request, database_connection_function: FunctionType):
+    auth = request.headers.get(AUTHORIZATION)
+    scheme, token = auth.split()
+    if scheme.lower() != "basic":
+        db_conn = database_connection_function()
+        db = Session(bind=db_conn)
+        return get_user_from_token(db, token=token)
 
 
 def register_audit_auth(db: Session, *, user: User, action: str, ip: str):

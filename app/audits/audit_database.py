@@ -12,12 +12,12 @@ class AuditDatabase(Base):
     """
 
     id = Column(BigInteger, primary_key=True)
-    row_id = Column(BigInteger)
+    data_id = Column(BigInteger)
     table_name = Column(String)
     action = Column(String)
     user = Column(String)
     date_hour = Column(DateTime, default=datetime.now)
-    row = Column(JSON)
+    data = Column(JSON)
 
     def __repr__(self) -> str:
         return f"<AuditDatabase table_name={self.table_name}, action={self.action}>"

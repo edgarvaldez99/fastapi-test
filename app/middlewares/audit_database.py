@@ -2,16 +2,12 @@ from types import FunctionType
 from typing import List
 
 from fastapi import FastAPI, Request
-from jose import jwt  # type: ignore
-from pydantic import ValidationError
-from sqlalchemy.orm import Session  # type: ignore
 from starlette.datastructures import FormData  # type: ignore
 from starlette.middleware.base import BaseHTTPMiddleware
 
 from app import logger
-from app.services import get_user_from_token
-
-AUTHORIZATION = "Authorization"
+from app.constants import AUTHORIZATION
+from app.services import get_user_from_request
 
 
 class AuditDatabaseMiddleware(BaseHTTPMiddleware):
@@ -38,22 +34,13 @@ class AuditDatabaseMiddleware(BaseHTTPMiddleware):
             self.is_router_included(request.url.path)
             and AUTHORIZATION in request.headers
         ):
-            auth = request.headers.get(AUTHORIZATION)
-            scheme, token = auth.split()
-            if scheme.lower() != "basic":
-                try:
-                    database_connection_function = self.get_db_conn_func_tuple[0]
-                    db_conn = database_connection_function()
-                    db = Session(bind=db_conn)
-                    user = get_user_from_token(db, token=token)
-                    if user:
-                        body: FormData = await request.form()
-                        if body:
-                            new_body = dict(body)
-                            new_body["modified_by"] = user.email
-                            logger.info(new_body)
-                            # request.body = new_body
-                except (jwt.JWTError, ValidationError):
-                    pass
+            user = get_user_from_request(request, self.get_db_conn_func_tuple[0])
+            if user:
+                body: FormData = await request.form()
+                if body:
+                    new_body = dict(body)
+                    new_body["modified_by"] = user.email
+                    logger.info(new_body)
+                    # request.body = new_body
         response = await call_next(request)
         return response

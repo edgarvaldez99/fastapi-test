@@ -1,4 +1,4 @@
-import uvicorn
+import uvicorn  # type: ignore
 
 from app import app
 from app.dependencies import get_database_connection
@@ -19,6 +19,6 @@ app.include_router(api)
 
 
 # Run Server
-if __name__ == '__main__':
+if __name__ == "__main__":
     uvicorn.run(app)
     # app.run(host="0.0.0.0", debug=True)

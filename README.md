@@ -123,6 +123,62 @@ Proyecto backend para iCargo desarrollado con [FastAPI](https://fastapi.tiangolo
     docker-compose exec backend alembic upgrade head
     ```
 
+## TEST, LINT Y FORMATO DE CÓDIGO PYTHON
+
+- Para ejecutar test y verificar linteo utilice el comando [nox](https://nox.thea.codes/en/stable/):
+    ```
+    nox
+    ```
+
+    Para no instalar de vuelta las dependencias utilice:
+    ```
+    nox -r
+    ```
+
+### Test
+
+- Para ejecutar test utilice ([pytest](https://docs.pytest.org/en/6.2.x/)):
+    ```
+    coverage run -m pytest
+    ```
+
+- Para obtener reporte de [coverage](https://coverage.readthedocs.io/en/coverage-5.5/) utilice:
+    ```
+    coverage report
+    ```
+
+### Lint y Formato de código
+
+- Para ejecutar [flake8](https://flake8.pycqa.org/en/latest/) utilice:
+    ```
+    flake8
+    ```
+    En caso de error debe corregirse a mano. Para más información consulte el [glosario](https://flake8.pycqa.org/en/latest/glossary.html)
+
+- Para ejecutar [mypy](https://mypy.readthedocs.io/en/stable/) utilice:
+    ```
+    mypy app
+    ```
+    En caso de error debe corregirse a mano. Para más información consulte este [link](https://mypy.readthedocs.io/en/stable/cheat_sheet_py3.html)
+
+- Para ejecutar [black](https://github.com/psf/black) utilice:
+    ```
+    black --check app
+    ```
+    En caso de error puede ejecutar el autocorrector:
+    ```
+    black app
+    ```
+
+- Para ejecutar [isort](https://pycqa.github.io/isort/) utilice:
+    ```
+    isort --check-only app
+    ```
+    En caso de error puede ejecutar el autocorrector:
+    ```
+    isort app
+    ```
+
 ## ESTRUCTURA
 ```
 .
@@ -134,7 +190,7 @@ Proyecto backend para iCargo desarrollado con [FastAPI](https://fastapi.tiangolo
 │       └── * migrations_files
 ├── alembic.ini
 ├── app
-│   ├── audits          # Modulo de auditoría
+│   ├── audits          # Módulo de auditoría
 │   │   └── __init__.py
 │   ├── config.py       # Variables de entorno y configuración
 │   ├── database        # Paquete de conf de base de datos
@@ -174,7 +230,7 @@ Proyecto backend para iCargo desarrollado con [FastAPI](https://fastapi.tiangolo
 
 ### A tener en cuenta.
 
-- El paquete endpoints es la parte más importante del proyecto, ya que es aquí donde se usan a todos los demás paquetes. Los endpoints solo deben encargarse del enrutado y la documentación del proyecto, no meter logica y/o acceder a la base de datos desde los endpoints.
+- El paquete endpoints es la parte más importante del proyecto, ya que es aquí donde se usan todos los demás paquetes. Los endpoints solo deben encargarse del enrutado y la documentación del proyecto, no meter lógica y/o acceder a la base de datos desde los endpoints.
 
 Ejemplo 1:
 
@@ -206,12 +262,12 @@ def read_user_by_id(
         raise HTTPException(
             status_code=400, detail="The user doesn't have enough privileges"
         )
-    # ↑ aquí arriba estamos metiendo lógica, esto podría hacerse desde un servicio y llamar al servicio en la linea del return
+    # ↑ aquí arriba estamos metiendo lógica, esto podría hacerse desde un servicio y llamar al servicio en la línea del return
     return user
 
 ```
 
-Si se transladar la lógica a un servicio, por ejemplo: [app/services/user.py]:
+Si se trasladar la lógica a un servicio, por ejemplo: [app/services/user.py]:
 
 ```python
 from fastapi import HTTPException
@@ -269,7 +325,7 @@ def my_account(email: str) -> Any:
     """
     Retrieve user by email.
     """
-    return db.query(User).filter(User.email == email).first() # se accede a base de datos directamente aquí, mejor usamos un repository
+    return db.query(User).filter(User.email == email).first() # se accede a base de datos directamente aquí, mejor usemos un repository
 ```
 
 Para evitar sobrecargar al endpoint con la responsabilidad de acceder a la base de datos mejor creamos una función en archivo [app/repositories/user.py]:

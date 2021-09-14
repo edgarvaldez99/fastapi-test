@@ -1,6 +1,6 @@
-# iCargo BACKEND
+# Proyecto Prueba FAST API
 
-Proyecto backend para iCargo desarrollado con [FastAPI](https://fastapi.tiangolo.com/)
+Proyecto backend de prueba desarrollado con [FastAPI](https://fastapi.tiangolo.com/)
 
 ## EJECUTAR LOCALMENTE
 
@@ -193,6 +193,7 @@ Proyecto backend para iCargo desarrollado con [FastAPI](https://fastapi.tiangolo
 │   ├── audits          # Módulo de auditoría
 │   │   └── __init__.py
 │   ├── config.py       # Variables de entorno y configuración
+│   ├── constants.py    # Variables Constantes
 │   ├── database        # Paquete de conf de base de datos
 │   │   └── __init__.py
 │   ├── dependencies    # Paquete de conf de dependencias

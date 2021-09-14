@@ -1,6 +1,13 @@
 import nox
 
 
+@nox.session
+def safety(session):
+    session.install("poetry")
+    session.run("poetry", "install")
+    session.run("safety", "check")
+
+
 @nox.session(python=["3.7", "3.8"])
 def tests(session):
     session.install("poetry")

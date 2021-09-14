@@ -1,15 +1,16 @@
 import sys
 
-sys.path = ['', '..'] + sys.path[1:]  # this line is added so that the file finds the path app/*
+sys.path = ["", ".."] + sys.path[
+    1:
+]  # this line is added so that the file finds the path app/*
 
 from logging.config import fileConfig  # noqa: E402
 
-from alembic import context  # noqa: E402
 from sqlalchemy import engine_from_config, pool  # type: ignore  # noqa: E402
 
+from alembic import context  # noqa: E402
 from app import models  # type: ignore  # noqa
 from app.config import SQLALCHEMY_DATABASE_URI  # noqa: E402
-
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

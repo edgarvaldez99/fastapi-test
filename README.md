@@ -179,6 +179,29 @@ Proyecto backend de prueba desarrollado con [FastAPI](https://fastapi.tiangolo.c
     isort app
     ```
 
+### Safety para control de dependencias
+
+- [Safety](https://github.com/pyupio/safety) comprueba las dependencias instaladas en busca de vulnerabilidades de seguridad conocidas.
+
+    Para ejecutar [safety](https://github.com/pyupio/safety) utilice:
+    ```
+    poetry run safety check
+    ```
+
+    En caso de error puede ejecutar:
+    ```
+    poetry update
+    ```
+
+### Pre-commit
+- [Pre-commit](https://pre-commit.com/) hook sirve para evitar que código no estándar se suba al repositorio.
+La configuración se basa en un archivo llamado .pre-commit-config.yaml.
+
+    Para habilitar [pre-commit](https://pre-commit.com/) hooks utilice:
+    ```
+    poetry run pre-commit install
+    ```
+
 ## ESTRUCTURA
 ```
 .
@@ -318,7 +341,9 @@ def read_user_by_id(
 
 Los endpoints solo deben tener la responsabilidad de enrutar y documentar.
 
-Mismo ejemplo se aplicaría en caso de que necesitemos acceder a base de datos:
+Ejemplo 2:
+
+Lo mismo se aplicaría en caso de que necesitemos acceder a base de datos:
 
 ```python
 @router.get("/{email}", response_model=schemas.User)

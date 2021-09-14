@@ -6,7 +6,7 @@ authors = ["Edgar <edgarvaldez99@gmail.com>"]
 license = "MIT"
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.8"
 python-decouple = "^3.4"
 python-dotenv = "^0.19.0"
 fastapi = "^0.68.1"
